@@ -2,7 +2,7 @@ import argparse
 import sys
 import pandas as pd
 import os
-from peft import PeftModel
+#from peft import PeftModel
 from transformers import LlamaForCausalLM, LlamaTokenizer, AutoTokenizer, AutoModelForCausalLM, AutoModelForSeq2SeqLM 
 from tqdm import tqdm
 from numpy import argmax
@@ -55,12 +55,12 @@ def main():
         from util_compute import predict_classification_causal_by_letter as predict_classification
     
     # Load adapter if we use adapter
-    if args.lora_weights != "x":
-        model = PeftModel.from_pretrained(
-            model,
-            args.lora_weights,
-            torch_dtype=torch.float16,
-        )
+    # if args.lora_weights != "x":
+    #     model = PeftModel.from_pretrained(
+    #         model,
+    #         args.lora_weights,
+    #         torch_dtype=torch.float16,
+    #     )
         SAVE_FILE = f'{args.output_folder}/result_prompt_{args.lang_prompt}_alpa_{args.lang_alpa}_{args.lora_weight.split("/")[-1]}.csv'
 
     # unwind broken decapoda-research config
