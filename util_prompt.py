@@ -75,10 +75,12 @@ def prepare_data_en(args):
     inputs = []
     outputs = []
     outputs_options = []
+    subjects = []
     data = pd.read_csv('data/ArabicMMLU.csv')
     data = data[data['is_few_shot'] == 0]
 
     for idx, row in data.iterrows():
+        subjects.append(row['Subject'])
         level = "" if pd.isna(row['Level']) else " for " + level_en[row['Level']]
         country = "" if pd.isna(row['Country']) else " in " + row['Country']
         main_meta_data = f"{row['Subject']} question{level}{country}"
@@ -96,7 +98,7 @@ def prepare_data_en(args):
         idx_label = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}[row['Answer Key']]
         outputs.append(idx_label)
         outputs_options.append(options)
-    return inputs, outputs, outputs_options
+    return inputs, outputs, outputs_options, subjects
 
 
 def prepare_data_ar(args):
@@ -113,11 +115,13 @@ def prepare_data_ar(args):
     inputs = []
     outputs = []
     outputs_options = []
+    subjects = []
     data = pd.read_csv('data/ArabicMMLU.csv')
     data = data[data['is_few_shot'] == 0]
 
     for idx, row in data.iterrows():
         subject = subject_ar[row['Subject']]
+        subjects.append(subject)
         level = "" if pd.isna(row['Level']) else ' ' + level_ar[row['Level']]
         country = "" if pd.isna(row['Country']) else ' ' + country_ar[row['Country']]
         main_meta_data = f"{subject}{level}{country}"
@@ -135,7 +139,7 @@ def prepare_data_ar(args):
         idx_label = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}[row['Answer Key']]
         outputs.append(idx_label)
         outputs_options.append(options)
-    return inputs, outputs, outputs_options
+    return inputs, outputs, outputs_options, subjects
 
 
 def prepare_data(args):

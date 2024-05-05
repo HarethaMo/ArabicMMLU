@@ -68,7 +68,7 @@ def main():
     if torch.__version__ >= "2" and sys.platform != "win32":
         model = torch.compile(model)
     
-    inputs, golds, outputs_options = prepare_data(args)
+    inputs, golds, outputs_options, subjects = prepare_data(args)
     preds = []
     probs = []
     for idx in tqdm(range(len(inputs))):
@@ -77,6 +77,7 @@ def main():
         preds.append(pred)
 
     output_df = pd.DataFrame()
+    output_df['subject'] = subjects
     output_df['input'] = inputs
     output_df['golds'] = golds
     output_df['options'] = outputs_options
