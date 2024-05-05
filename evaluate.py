@@ -42,8 +42,8 @@ def main():
         
         
     os.makedirs(args.output_folder, exist_ok=True)
-    tokenizer_class = LlamaTokenizer if 'llama' in args.base_model else AutoTokenizer
-    model_class = LlamaForCausalLM if 'llama' in args.base_model else AutoModelForCausalLM
+    tokenizer_class = AutoTokenizer
+    model_class = AutoModelForCausalLM
 
     SAVE_FILE = f'{args.output_folder}/result_prompt_{args.lang_prompt}_alpa_{args.lang_alpa}_{args.base_model.split("/")[-1]}.csv'
     tokenizer = tokenizer_class.from_pretrained(args.base_model, use_auth_token=TOKEN)
