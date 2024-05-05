@@ -28,13 +28,18 @@ def parse_args():
     parser.add_argument("--lang_alpa", type=str, default="ar")
     parser.add_argument("--lang_prompt", type=str, default="ar")
     parser.add_argument("--output_folder", type=str, default="output")
+    parser.add_argument("--cache_dir", type=str, required=False)
     args = parser.parse_args()
     return args
 
 
 def main():
     args = parse_args()
-
+    if args.cache_dir:
+        # change the default cache dir in huggingface
+        os.environ['TRANSFORMERS_CACHE'] = args.cache_dir
+        os.environ['HF_HOME'] = args.cache_dir
+        
     os.makedirs(args.output_folder, exist_ok=True)
     tokenizer_class = LlamaTokenizer if 'llama' in args.base_model else AutoTokenizer
     model_class = LlamaForCausalLM if 'llama' in args.base_model else AutoModelForCausalLM
