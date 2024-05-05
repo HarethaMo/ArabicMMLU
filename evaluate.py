@@ -40,6 +40,8 @@ def main():
         os.environ['TRANSFORMERS_CACHE'] = args.cache_dir
         os.environ['HF_HOME'] = args.cache_dir
         
+    os.environ['HF_TOKEN'] = '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'
+        
     os.makedirs(args.output_folder, exist_ok=True)
     tokenizer_class = LlamaTokenizer if 'llama' in args.base_model else AutoTokenizer
     model_class = LlamaForCausalLM if 'llama' in args.base_model else AutoModelForCausalLM
