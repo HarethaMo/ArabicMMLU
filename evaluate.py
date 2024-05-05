@@ -11,8 +11,6 @@ from sklearn.metrics import accuracy_score
 from util_prompt import prepare_data
 
 
-TOKEN = 'TOKEN'
-
 if torch.cuda.is_available():
     device = "cuda"
 else:
@@ -35,40 +33,29 @@ def parse_args():
 
 def main():
     args = parse_args()
-    if args.cache_dir:
-        # change the default cache dir in huggingface
-        os.environ['TRANSFORMERS_CACHE'] = args.cache_dir
-        os.environ['HF_HOME'] = args.cache_dir
-        
-        
     os.makedirs(args.output_folder, exist_ok=True)
     tokenizer_class = AutoTokenizer
     model_class = AutoModelForCausalLM
 
     SAVE_FILE = f'{args.output_folder}/result_prompt_{args.lang_prompt}_alpa_{args.lang_alpa}_{args.base_model.split("/")[-1]}.csv'
-    tokenizer = tokenizer_class.from_pretrained(args.base_model, use_auth_token=TOKEN)
-    
-    if 'mt0' in args.base_model or 'arat5' in args.base_model.lower():
-        model = AutoModelForSeq2SeqLM.from_pretrained(args.base_model, device_map="auto", load_in_8bit="xxl" in args.base_model)
-        from util_compute import predict_classification_mt0_by_letter as predict_classification
+    if args.cache_dir:
+        # change the default cache dir in huggingface
+        os.environ['HF_HUB_CACHE'] = args.cache_dir
+        tokenizer = tokenizer_class.from_pretrained(args.base_model, cache_dir=args.cache_dir)
+        model = model_class.from_pretrained(args.base_model, load_in_8bit=args.load_8bit, trust_remote_code=True, device_map="auto", cache_dir=args.cache_dir)
     else:
-        model = model_class.from_pretrained(args.base_model, load_in_8bit=args.load_8bit, trust_remote_code=True, device_map="auto", use_auth_token=TOKEN)
-        from util_compute import predict_classification_causal_by_letter as predict_classification
-    
-    # Load adapter if we use adapter
-    # if args.lora_weights != "x":
-    #     model = PeftModel.from_pretrained(
-    #         model,
-    #         args.lora_weights,
-    #         torch_dtype=torch.float16,
-    #     )
-        SAVE_FILE = f'{args.output_folder}/result_prompt_{args.lang_prompt}_alpa_{args.lang_alpa}_{args.lora_weight.split("/")[-1]}.csv'
+        tokenizer = tokenizer_class.from_pretrained(args.base_model)
+        model = model_class.from_pretrained(args.base_model, load_in_8bit=args.load_8bit, trust_remote_code=True, device_map="auto")
+    from util_compute import predict_classification_causal_by_letter as predict_classification
 
-    # unwind broken decapoda-research config
-    if 'llama' in args.base_model:
-        model.config.pad_token_id = tokenizer.pad_token_id = 0  # unk
-        model.config.bos_token_id = 1
-        model.config.eos_token_id = 2
+# Load adapter if we use adapter
+# if args.lora_weights != "x":
+#     model = PeftModel.from_pretrained(
+#         model,
+#         args.lora_weights,
+#         torch_dtype=torch.float16,
+#     )
+#     SAVE_FILE = f'{args.output_folder}/result_prompt_{args.lang_prompt}_alpa_{args.lang_alpa}_{args.lora_weight.split("/")[-1]}.csv'
 
     model.eval()
     if torch.__version__ >= "2" and sys.platform != "win32":
