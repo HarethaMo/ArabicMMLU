@@ -7,6 +7,8 @@ from transformers import LlamaForCausalLM, LlamaTokenizer, AutoTokenizer, AutoMo
 from tqdm import tqdm
 from numpy import argmax
 import torch
+import torch._dynamo
+torch._dynamo.config.suppress_errors = True
 from sklearn.metrics import accuracy_score
 from util_prompt import prepare_data
 
