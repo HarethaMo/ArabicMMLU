@@ -38,7 +38,7 @@ def main():
     args = parse_args()
     os.makedirs(args.output_folder, exist_ok=True)
     tokenizer_class = AutoTokenizer
-    model_class = AutoModelForCausalLM
+    model_class = AutoModelForSeq2SeqLM if 'aya' in args.base_model.lower() else AutoModelForCausalLM
 
     SAVE_FILE = f'{args.output_folder}/result_prompt_{args.lang_prompt}_alpa_{args.lang_alpa}_{args.base_model.split("/")[-1]}.csv'
     if args.cache_dir:
