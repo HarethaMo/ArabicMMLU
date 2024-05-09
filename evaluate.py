@@ -29,6 +29,7 @@ def parse_args():
     parser.add_argument("--lang_prompt", type=str, default="ar")
     parser.add_argument("--output_folder", type=str, default="output")
     parser.add_argument("--cache_dir", type=str, required=False)
+    parser.add_argument("--device_map", type=str, default="auto")
     args = parser.parse_args()
     return args
 
@@ -44,10 +45,10 @@ def main():
         # change the default cache dir in huggingface
         os.environ['HF_HUB_CACHE'] = args.cache_dir
         tokenizer = tokenizer_class.from_pretrained(args.base_model, cache_dir=args.cache_dir)
-        model = model_class.from_pretrained(args.base_model, load_in_8bit=args.load_8bit, trust_remote_code=True, device_map="auto", cache_dir=args.cache_dir)
+        model = model_class.from_pretrained(args.base_model, load_in_8bit=args.load_8bit, trust_remote_code=True, device_map=args.device_map, cache_dir=args.cache_dir)
     else:
         tokenizer = tokenizer_class.from_pretrained(args.base_model)
-        model = model_class.from_pretrained(args.base_model, load_in_8bit=args.load_8bit, trust_remote_code=True, device_map="auto")
+        model = model_class.from_pretrained(args.base_model, load_in_8bit=args.load_8bit, trust_remote_code=True, device_map=args.device_map)
     from util_compute import predict_classification_causal_by_letter as predict_classification
 
 # Load adapter if we use adapter
