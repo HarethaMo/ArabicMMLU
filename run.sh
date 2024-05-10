@@ -1,5 +1,3 @@
-
-conda activate ar_mmlu_env
 ## Cohere models
 
 #python evaluate.py --load_8bit --base_model='CohereForAI/aya-101' --lora_weights='x' --lang_alpa='ar' --lang_prompt='ar' --cache_dir='/ibex/user/abush0a/aya-101'
